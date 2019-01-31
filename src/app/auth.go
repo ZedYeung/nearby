@@ -17,13 +17,6 @@ import (
 var signingKey = []byte("sdgasdgasdf")
 var db *sql.DB
 
-const (
-	DB_USER     = "testing"
-	DB_PASSWORD = "testing"
-	DB_NAME     = "nearby"
-	hashCost    = 8
-)
-
 func Signup(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "text/plain")
 	res.Header().Set("Access-Control-Allow-Origin", "*")
@@ -127,7 +120,11 @@ func Login(res http.ResponseWriter, req *http.Request) {
 		claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 
 		/* Sign (Encrypt) the token with our secret such that only server knows it. */
-		tokenString, _ := token.SignedString(signingKey)
+		tokenString, err := token.SignedString([]byte(SIGN_KEY))
+		if err != nil {
+			fmt.Println(err)
+			http.Error(res, "cannot sign token", http.StatusInternalServerError)
+		}
 
 		/* Finally, write the token to the browser window */
 		res.Write([]byte(tokenString))
