@@ -32,7 +32,7 @@ func Search(res http.ResponseWriter, req *http.Request) {
 
 	lat, _ := strconv.ParseFloat(req.URL.Query().Get("lat"), 64)
 	lon, _ := strconv.ParseFloat(req.URL.Query().Get("lon"), 64)
-	ran := DISTANCE
+	ran := config.DISTANCE
 	if val := req.URL.Query().Get("range"); val != "" {
 		ran = val + "km"
 	}
@@ -44,11 +44,11 @@ func Search(res http.ResponseWriter, req *http.Request) {
 	// use lat+lon+range as key
 	key := req.URL.Query().Get("lat") + ":" + req.URL.Query().Get("lon") + ":" + ran
 	// First find query with cache.
-	if ENABLE_MEMCACHE {
+	if config.ENABLE_MEMCACHE {
 		// build connection with Redis
 		rs_client := redis.NewClient(&redis.Options{
-			Addr:     REDIS_URL,
-			Password: REDIS_PASSWORD,
+			Addr:     config.REDIS_URL,
+			Password: config.REDIS_PASSWORD,
 			DB:       0,
 		})
 
@@ -67,7 +67,7 @@ func Search(res http.ResponseWriter, req *http.Request) {
 
 	// for here, not enable cache or cache miss, we need to search in database(ES).
 	// Create a client，which means we create a connection to ES. If there is err, return.
-	client, err := elastic.NewClient(elastic.SetURL(ES_URL), elastic.SetSniff(false))
+	client, err := elastic.NewClient(elastic.SetURL(config.ES_URL), elastic.SetSniff(false))
 	if err != nil {
 		panic(err)
 		return
@@ -83,7 +83,7 @@ func Search(res http.ResponseWriter, req *http.Request) {
 	// Get the results based on Index (similar to dataset) and query (q that we just prepared).
 	// Pretty means to format the output.
 	searchResult, err := client.Search().
-		Index(INDEX).
+		Index(config.INDEX).
 		Query(query).
 		Pretty(true).
 		Do(ctx)
@@ -120,11 +120,11 @@ func Search(res http.ResponseWriter, req *http.Request) {
 
 	// for here, we find result from ES, we need to write result into Redis, use TTL(time to live) as
 	// caching strategy to avoid result inconsistent
-	if ENABLE_MEMCACHE {
+	if config.ENABLE_MEMCACHE {
 		// build connection with Redis
 		rs_client := redis.NewClient(&redis.Options{
-			Addr:     REDIS_URL,
-			Password: REDIS_PASSWORD,
+			Addr:     config.REDIS_URL,
+			Password: config.REDIS_PASSWORD,
 			DB:       0,
 		})
 

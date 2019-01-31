@@ -83,7 +83,7 @@ func Post(res http.ResponseWriter, req *http.Request) {
 		}
 
 		// attrs is file
-		_, attrs, err := saveToGCS(context.Background(), file, BUCKET_NAME, fmt.Sprintf("%s%d", id, i))
+		_, attrs, err := saveToGCS(context.Background(), file, config.BUCKET_NAME, fmt.Sprintf("%s%d", id, i))
 		if err != nil {
 			http.Error(res, "GCS is not setup", http.StatusInternalServerError)
 			fmt.Printf("GCS is not setup %v\n", err)
@@ -100,7 +100,7 @@ func Post(res http.ResponseWriter, req *http.Request) {
 	go saveToES(ctx, post, id)
 
 	// Save to BigTable as well.
-	if ENABLE_BIGTABLE {
+	if config.ENABLE_BIGTABLE {
 		go saveToBigTable(ctx, post, id)
 	}
 }
@@ -111,7 +111,7 @@ func saveToES(ctx context.Context, post *model.Post, id string) {
 	defer post.Mu.Unlock()
 
 	// Create a client
-	es_client, err := elastic.NewClient(elastic.SetURL(ES_URL), elastic.SetSniff(false))
+	es_client, err := elastic.NewClient(elastic.SetURL(config.ES_URL), elastic.SetSniff(false))
 	if err != nil {
 		panic(err)
 		return
@@ -119,8 +119,8 @@ func saveToES(ctx context.Context, post *model.Post, id string) {
 
 	// Save it to index, example taken from https://github.com/olivere/elastic
 	_, err = es_client.Index().
-		Index(INDEX).
-		Type(TYPE).
+		Index(config.INDEX).
+		Type(config.TYPE).
 		Id(id).
 		BodyJson(post).
 		Refresh("true").
@@ -180,7 +180,7 @@ func saveToBigTable(ctx context.Context, post *model.Post, id string) {
 	post.Mu.Lock()
 	defer post.Mu.Unlock()
 
-	bt_client, err := bigtable.NewClient(ctx, PROJECT_ID, BT_INSTANCE)
+	bt_client, err := bigtable.NewClient(ctx, config.PROJECT_ID, config.BT_INSTANCE)
 	if err != nil {
 		fmt.Println(err)
 		panic(err)

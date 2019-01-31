@@ -24,7 +24,7 @@ func Signup(res http.ResponseWriter, req *http.Request) {
 
 	// Connect to the postgres db
 	dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
-		DB_USER, DB_PASSWORD, DB_NAME)
+		config.DB_USER, config.DB_PASSWORD, config.DB_NAME)
 
 	db, err := sql.Open("postgres", dbinfo)
 	checkErr(err)
@@ -78,7 +78,7 @@ func Login(res http.ResponseWriter, req *http.Request) {
 
 	// Connect to the postgres db
 	dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
-		DB_USER, DB_PASSWORD, DB_NAME)
+		config.DB_USER, config.DB_PASSWORD, config.DB_NAME)
 
 	db, err := sql.Open("postgres", dbinfo)
 	checkErr(err)
@@ -120,7 +120,7 @@ func Login(res http.ResponseWriter, req *http.Request) {
 		claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 
 		/* Sign (Encrypt) the token with our secret such that only server knows it. */
-		tokenString, err := token.SignedString([]byte(SIGN_KEY))
+		tokenString, err := token.SignedString([]byte(config.SIGN_KEY))
 		if err != nil {
 			fmt.Println(err)
 			http.Error(res, "cannot sign token", http.StatusInternalServerError)
