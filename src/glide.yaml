@@ -1,0 +1,42 @@
+package: .
+ignore:
+- model
+import:
+- package: cloud.google.com/go
+  version: ~0.35.1
+  subpackages:
+  - bigtable
+  - storage
+- package: github.com/auth0/go-jwt-middleware
+- package: github.com/dgrijalva/jwt-go
+  version: ~3.2.0
+- package: github.com/go-redis/redis
+  version: ~6.15.1
+- package: github.com/gorilla/mux
+  version: ~1.6.2
+- package: github.com/pborman/uuid
+  version: ~1.2.0
+- package: gopkg.in/olivere/elastic.v3
+  version: ~6.2.15
+- package: github.com/lib/pq
+- package: golang.org/x/crypto
+  subpackages:
+  - bcrypt
+- package: github.com/mattn/go-sqlite3
+  version: ~1.10.0
+- package: github.com/qor/auth
+  version: master
+- package: github.com/qor/admin
+  version: master
+- package: github.com/qor/render
+  version: master    
+- package: github.com/qor/session
+  version: master   
+- package: github.com/qor/auth_themes
+  version: master
+- package: github.com/qor/i18n
+  version: master
+- package: github.com/qor/roles 
+  version: master
+- package: github.com/qor/qor 
+  version: master
