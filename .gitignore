@@ -6,6 +6,8 @@
 src/vendor
 bin/
 pkg/
-src/config/config.json
+src/config/*.json
+src/test_images/
 github.com/
 golang.org/
+
