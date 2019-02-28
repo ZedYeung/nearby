@@ -1,6 +1,0 @@
-[submodule "nearby-backend"]
-	path = nearby-backend
-	url = git@github.com:ZedYeung/nearby-backend.git
-[submodule "nearby-frontend"]
-	path = nearby-frontend
-	url = git@github.com:ZedYeung/nearby-frontend.git
