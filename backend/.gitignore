@@ -1,0 +1,13 @@
+# Compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.a
+*.so
+
+src/vendor
+bin/
+pkg/
+src/config/*.json
+src/test_images/
+github.com/
+golang.org/
+
