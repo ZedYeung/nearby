@@ -1,19 +1,18 @@
-import React from 'react';
-import {POS_KEY} from '../.env';
-import {AroundMarker} from "./AroundMarker";
-import {withScriptjs, withGoogleMap, GoogleMap} from 'react-google-maps';
+import React, { Component } from 'react';
+import { AroundMarker } from "./AroundMarker";
+import { withScriptjs, withGoogleMap, GoogleMap } from 'react-google-maps';
 //  https://github.com/tomchentw/react-google-maps
-class AroundMap extends React.Component {
+class AroundMap extends Component {
     reloadMarkers = ()=>{
         const center = this.map.getCenter();
-        const location = {lat: center.lat(), lon: center.lng()};
+        const location = { lat: center.lat(), lon: center.lng() };
         const range = this.getRange();
         this.props.loadNearByPosts(location, range);
     }
 
     getMapRef = (map) =>{
         this.map = map;
-        window.map = map;// 
+        window.map = map;//
     }
 
     getRange = () => {
@@ -29,7 +28,7 @@ class AroundMap extends React.Component {
     }
 
     render() {
-        const {lat, lon} = JSON.parse(localStorage.getItem(POS_KEY));
+        const {lat, lon} = this.props.getLocation();
         return (
             <GoogleMap
                 ref={this.getMapRef}
