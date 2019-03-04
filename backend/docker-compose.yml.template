@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:11.2-alpine
+    volumes:
+      - postgres_data:/var/lib/postgreDB/data/
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+  backend:
+    build: .
+    image: ${DOCKER_REGISTRY}/${DOCKER_USER}/${APP}_backend:latest
+    volumes:
+      - ./:/usr/local/backend
+    ports:
+      - ${BACKEND_PORT}:${BACKEND_PORT}
+    environment:
+      - BACKEND_PORT=${BACKEND_PORT}
+      - DISTANCE=${DISTANCE}
+      - SIGN_KEY=${SIGN_KEY}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - ES_INDEX=${ES_INDEX}
+      - ES_TYPE=${ES_TYPE}
+      - BT_INSTANCE=${BT_INSTANCE}
+      - REDIS_URL=${REDIS_URL}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_DB=${REDIS_DB}
+      - BUCKET_NAME=${BUCKET_NAME}
+      - ENABLE_MEMCACHE=${ENABLE_MEMCACHE}
+      - ENABLE_BIGTABLE=${ENABLE_BIGTABLE}
+      - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
+    depends_on:
+      - db
+volumes:
+  postgres_data:
