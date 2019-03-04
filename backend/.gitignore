@@ -3,11 +3,9 @@
 *.a
 *.so
 
-src/vendor
+vendor/
 bin/
 pkg/
 src/config/*.json
 src/test_images/
-github.com/
-golang.org/
 
