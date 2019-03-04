@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Marker, InfoWindow} from 'react-google-maps';
-export class AroundMarker extends React.Component {
+
+export class AroundMarker extends Component {
     state = {
         isOpen : false,
     }
+
     onToggleOpen = () =>{
-        this.setState((prevState)=>({isOpen:!prevState.isOpen}));
+        this.setState((prevState) => ({
+          isOpen: !prevState.isOpen
+        }));
     }
 
     render(){

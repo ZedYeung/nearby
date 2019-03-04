@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {Form, Input, Upload, Icon} from 'antd';
 
 const FormItem = Form.Item;
 
-class CreatePostForm extends React.Component {
+class CreatePostForm extends Component {
     normFile = (e) => {
         console.log('Upload event:', e);
         if (Array.isArray(e)) {
