@@ -1,0 +1,87 @@
+# https://github.com/nginxinc/docker-nginx/tree/master/mainline/alpine
+# https://github.com/rjoonas/heroku-docker-nginx-example
+
+user  nginx;
+worker_processes  1;
+
+error_log  /var/log/nginx/error.log warn;
+pid        /var/run/nginx.pid;
+
+
+events {
+    worker_connections  1024;
+}
+
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"
+                      ';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    keepalive_timeout  65;
+
+    gzip  on;
+
+    # upstream backend {
+    #     server $BACKEND;
+    # }
+
+    server {
+        listen 80 default_server;
+
+        server_name nearby.zedyeung.com;
+
+        set $proxy_host $host;
+        set $proxy_schema "https";
+        if ($host = "localhost") {
+          set $proxy_host $http_host;
+          set $proxy_schema "http";
+        }
+
+        # proxy_set_header   HOST $proxy_host;
+        # proxy_set_header   HOST $proxy_host;
+        proxy_set_header   HOST $http_host;
+        proxy_set_header   X-Real-IP $remote_addr;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Host $server_name;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+
+        # Queries beginning with /api/ and then stops searching.
+        location ^~ /api/ {
+            proxy_pass http://$BACKEND/;
+        }
+
+        location ^~ /media {
+            proxy_pass http://$BACKEND;
+        }
+
+        location / {
+            add_header Cache-Control "no-cache";
+            proxy_cache_bypass $http_pragma;
+            proxy_cache_revalidate on;
+            expires off;
+            access_log on;
+            root   /usr/share/nginx/html;
+            try_files $uri /index.html;
+        }
+
+        error_page  404              /404.html;
+
+        error_page   500 502 503 504  /50x.html;
+
+        location = /50x.html {
+            root   /usr/share/nginx/html;
+        }
+    }
+
+    # include /etc/nginx/conf.d/*.conf;
+}
