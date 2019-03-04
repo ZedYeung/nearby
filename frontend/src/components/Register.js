@@ -1,31 +1,27 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Form, Input, Button, message } from 'antd';
-import $ from 'jquery';
-import { API_ROOT } from '../.env.js'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import { register } from './API';
 
 const FormItem = Form.Item;
-class RegistrationForm extends React.Component {
+class RegistrationForm extends Component {
     state = {
         confirmDirty: false
     }
+
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 // console.log('Received values of form: ', values);
-                $.ajax({
-                    url: `${API_ROOT}/signup`,
-                    method: 'POST',
-                    data: JSON.stringify({
-                        username: values.username,
-                        password: values.password
-                    })
-                }).then((response) => {
+                register({
+                    username: values.username,
+                    password: values.password
+                }).then((res) => {
                     // message.success(response);
                     this.props.history.push('/login');
-                }).catch(function(error) {
-                    message.error(error.responseText);
+                }).catch((error) => {
+                    console.log(error);
                 });
             }
         });
@@ -119,7 +115,7 @@ class RegistrationForm extends React.Component {
                 </FormItem>
                 <FormItem {...tailFormItemLayout}>
                     <Button type="primary" htmlType="submit">Register</Button>
-                    <p>I already have an account, go back to <Link to='/Login'>login</Link></p>
+                    <p>I already have an account, go back to <Link to='/login'>login</Link></p>
                 </FormItem>
             </Form>
         );

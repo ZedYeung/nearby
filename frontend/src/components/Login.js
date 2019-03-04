@@ -1,30 +1,24 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Form, Icon, Input, Button, message } from 'antd';
-import { Link } from 'react-router-dom'
-import {API_ROOT} from '../.env'
-import $ from 'jquery'
+import { Link } from 'react-router-dom';
+import { login } from './API';
 
 //  https://ant.design/components/form/
 
 const FormItem = Form.Item;
-class NormalLoginForm extends React.Component {
+class NormalLoginForm extends Component {
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 // console.log('Received values of form: ', values);
-                $.ajax({
-                    url: `${API_ROOT}/login`,
-                    method: 'POST',
-                    data: JSON.stringify({
-                       username: values.username,
-                       password: values.password,
-                    }),
-                }).then((response) => {
+                login({
+                   username: values.username,
+                   password: values.password,
+                }).then((res) => {
                     // message.success(response);
-                    this.props.handleLogin(response);
-                }, (error) => {
-                    message.error(error.responseText);
+                    console.log(res)
+                    this.props.handleLogin(res);
                 }).catch((error) => {
                     console.log(error);
                 });

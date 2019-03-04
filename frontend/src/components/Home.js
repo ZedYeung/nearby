@@ -1,29 +1,37 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Tabs, Spin } from 'antd';
-import {API_ROOT, AUTH_PREFIX, GEO_OPTIONS, POS_KEY, TOKEN_KEY, GOOGLE_MAP_URL} from "../.env";
-import $ from 'jquery';
-import {Gallery} from "./Gallery";
-import {CreatePostButton} from './CreatePostButton';
-import {WrappedAroundMap} from './AroundMap';
+import { Gallery } from "./Gallery";
+import { CreatePostButton } from './CreatePostButton';
+import { WrappedAroundMap } from './AroundMap';
+import { getSearch } from './API';
 
 const TabPane = Tabs.TabPane;
+const GEO_OPTIONS = {
+    enableHighAccuracy: false,
+    maximumAge        : 3600000, // milliseconds a possible cached position to return. set 0 means not use cache, always try to retrieve real current position
+    timeout           : 27000  // milliseconds the device is allowed to take in order to return a position
+};
 
-export class Home extends React.Component{
+export class Home extends Component{
     state = {
         loadingGeoLocation : false,
         loadingPosts: false,
         error: '',
-        posts:[],
+        posts:null,
     }
 
     componentDidMount () {
-        this.setState({loadingGeoLocation: true, error:'',});
-        this.getGeoLocation();
+        this.setState({
+          loadingGeoLocation: true,
+          error:''
+        }, () => {
+          this.getGeoLocation();
+        });
     }
 
     getGeoLocation(){
         if ("geolocation" in navigator) {
-            /* 
+            /*
             The Navigator.geolocation read-only property returns a Geolocation object that gives Web content access to the location of the device.
             This allows a Web site or app to offer customized results based on the user's location.
             https://developer.mozilla.org/en-US/docs/Web/API/Navigator/geolocation
@@ -46,7 +54,7 @@ export class Home extends React.Component{
             error:'',
         });
         const {latitude, longitude} = position.coords;
-        localStorage.setItem(POS_KEY, JSON.stringify({lat: latitude, lon: longitude}));
+        this.props.setLocation(latitude, longitude);
         this.loadNearByPosts();
     }
 
@@ -81,29 +89,32 @@ export class Home extends React.Component{
     }
 
     loadNearByPosts = (location, radius) => {
-        const {lat, lon} = location? location: JSON.parse(localStorage.getItem(POS_KEY));
-        // const {lat, lon} = {lat:47.7915953, lon:-122.3937977};
+        const {lat, lon} = location? location: this.props.getLocation();
         const range = radius ? radius : 20;
 
-        this.setState({loadingPosts:true, error:''});
-        return $.ajax({
-            url: `${API_ROOT}/search?lat=${lat}&lon=${lon}&range=${range}`,
-            method: 'GET',
-            headers: {
-                Authorization: `${AUTH_PREFIX} ${localStorage.getItem(TOKEN_KEY)}`
-            },
-        }).then((response) => {
-            this.setState({posts:response, loadingPosts:false, error:''});
-            console.log("posts: " + response);
-        }, (error) => {
-            this.setState({loadingPosts:false, error:error.responseText});
-        }).catch((error) => {
-            console.log(error);
+        this.setState({
+          loadingPosts:true,
+          error:''
+        }, () => {
+          getSearch({
+              lat: lat,
+              lon: lon,
+              range: range
+          }).then((res) => {
+              this.setState({
+                posts:res.data,
+                loadingPosts:false,
+                error:''
+              });
+              console.log("posts: " + res.data);
+          }).catch((err) => {
+              console.log(err);
+          })
         });
     }
 
     render(){
-        const createPostButton = <CreatePostButton loadNearByPosts={this.loadNearByPosts}/>;
+        const createPostButton = <CreatePostButton getLocation={this.props.getLocation} loadNearByPosts={this.loadNearByPosts}/>;
 
         return (//jsx ==  React.createElement(..)
             <Tabs tabBarExtraContent={createPostButton} className="main-tabs">
@@ -112,12 +123,13 @@ export class Home extends React.Component{
                 </TabPane>
                 <TabPane tab="Map" key="2">
                     <WrappedAroundMap
-                        googleMapURL={GOOGLE_MAP_URL}
+                        googleMapURL={process.env.REACT_APP_GOOGLE_MAP_URL}
                         loadingElement={<div style={{ height: `100%` }} />}
                         containerElement={<div style={{ height: `600px` }} />}
                         mapElement={<div style={{ height: `100%` }}/>}
                         posts = {this.state.posts}
                         loadNearByPosts = {this.loadNearByPosts}
+                        getLocation={this.props.getLocation}
                     />
                 </TabPane>
             </Tabs>

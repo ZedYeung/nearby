@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Modal, Button, message } from 'antd';
-import {WrappedCreatePostForm} from './CreatePostForm';
-import {API_ROOT, POS_KEY, AUTH_PREFIX, TOKEN_KEY} from '../.env';
-import $ from 'jquery';
+import { WrappedCreatePostForm } from './CreatePostForm';
+import { createPost } from './API';
 
-export class CreatePostButton extends React.Component {
+export class CreatePostButton extends Component {
     state = {
         visible: false,
         confirmLoading: false,
@@ -21,7 +20,7 @@ export class CreatePostButton extends React.Component {
             if(!error){
                 console.log('Received values of form: ', values);
 
-                const {lat, lon} = JSON.parse(localStorage.getItem(POS_KEY));
+                const {lat, lon} = this.props.getLocation();
                 // const {lat, lon} = {lat:47.6492236871, lon:-122.3937977};
                 const formData = new FormData();
                 // jitter
@@ -33,31 +32,27 @@ export class CreatePostButton extends React.Component {
                     formData.append('images[]', image.originFileObj, image.name);
                 })
 
-                this.setState({confirmLoading: true,});
-                $.ajax({
-                    url:`${API_ROOT}/post`,
-                    method: 'POST',
-                    headers: {
-                        Authorization: `${AUTH_PREFIX} ${localStorage.getItem(TOKEN_KEY)}`,
-                    },
-                    processData: false,
-                    contentType: false,
-                    dataType: 'text',
-                    data: formData,
-                }).then(() => {
-                    message.success('created a post successfully.');
-                    this.form.resetFields();//ant design method
-                }, (error)=>{
-                    message.error(error.responseText);
-                    this.form.resetFields();//ant design method
-                }).then(()=>{
-                    this.props.loadNearByPosts().then(()=>{
-                        this.setState({ visible: false, confirmLoading: false,});
-                    });
-                }).catch((error)=>{
-                    message.error('create post failed.');
-                    console.log(error);
+                console.log(formData)
+                this.setState({
+                  confirmLoading: true
+                }, () => {
+                  createPost(formData)
+                  .then((res) => {
+                      message.success('created a post successfully.');
+                      this.form.resetFields();//ant design method
+                      this.props.loadNearByPosts()
+                      .then(()=>{
+                          this.setState({
+                            visible: false,
+                            confirmLoading: false
+                          });
+                      });
+                  }).catch((error)=>{
+                      message.error('create post failed.');
+                      console.log(error);
+                  });
                 });
+
             }
         });
     }
