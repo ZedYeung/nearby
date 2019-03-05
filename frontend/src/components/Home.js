@@ -48,7 +48,7 @@ export class Home extends Component{
     }
 
     onSuccessLoadGeoLocation = (position) => {
-        console.log(position);
+        // console.log(position);
         this.setState({
             loadingGeoLocation: false,
             error:'',
@@ -95,22 +95,22 @@ export class Home extends Component{
         this.setState({
           loadingPosts:true,
           error:''
-        }, () => {
-          getSearch({
-              lat: lat,
-              lon: lon,
-              range: range
-          }).then((res) => {
-              this.setState({
-                posts:res.data,
-                loadingPosts:false,
-                error:''
-              });
-              console.log("posts: " + res.data);
-          }).catch((err) => {
-              console.log(err);
-          })
         });
+
+        return getSearch({
+            lat: lat,
+            lon: lon,
+            range: range
+        }).then((res) => {
+            this.setState({
+              posts:res.data,
+              loadingPosts:false,
+              error:''
+            });
+            // console.log("posts: " + res.data);
+        }).catch((err) => {
+            console.log(err);
+        })
     }
 
     render(){
