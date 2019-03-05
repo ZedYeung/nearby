@@ -15,7 +15,6 @@ class App extends React.Component {
   }
 
   handleLogin = (res) => {
-      console.log(res.data)
       this.props.cookies.set(process.env.REACT_APP_TOKEN_KEY, res.data, { path: '/', maxAge: 3600 * 24 });
       this.setState({isLoggedIn:true});
   }

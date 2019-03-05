@@ -5,7 +5,7 @@ const FormItem = Form.Item;
 
 class CreatePostForm extends Component {
     normFile = (e) => {
-        console.log('Upload event:', e);
+        // console.log('Upload event:', e);
         if (Array.isArray(e)) {
             console.log("e is array")
             return e;

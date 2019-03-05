@@ -18,7 +18,7 @@ export class CreatePostButton extends Component {
     handleOk = () => {
         this.form.validateFields((error, values) =>{
             if(!error){
-                console.log('Received values of form: ', values);
+                // console.log('Received values of form: ', values);
 
                 const {lat, lon} = this.props.getLocation();
                 // const {lat, lon} = {lat:47.6492236871, lon:-122.3937977};
@@ -32,7 +32,6 @@ export class CreatePostButton extends Component {
                     formData.append('images[]', image.originFileObj, image.name);
                 })
 
-                console.log(formData)
                 this.setState({
                   confirmLoading: true
                 }, () => {

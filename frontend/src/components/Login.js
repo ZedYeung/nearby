@@ -17,7 +17,7 @@ class NormalLoginForm extends Component {
                    password: values.password,
                 }).then((res) => {
                     // message.success(response);
-                    console.log(res)
+                    // console.log(res)
                     this.props.handleLogin(res);
                 }).catch((error) => {
                     console.log(error);
