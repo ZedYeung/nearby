@@ -1,0 +1,49 @@
+# gcp
+variable "GCP_PROJECT_ID" {
+  default = "${GCP_PROJECT_ID}"
+}
+
+variable "GCP_REGION" {
+  default = "${GCP_REGION}"
+}
+
+variable "GCP_ZONE" {
+  default = "${GCP_ZONE}"
+}
+
+variable "GKE_VERSION" {
+  default = "${GKE_VERSION}"
+}
+
+variable "GOOGLE_APPLICATION_CREDENTIALS" {
+  default     = "${GOOGLE_APPLICATION_CREDENTIALS}"
+}
+
+variable "GCP_INSTANCE_TYPE" {
+  default     = "${GCP_INSTANCE_TYPE}"
+}
+
+variable "BUCKET_NAME" {
+  default = "${BUCKET_NAME}"
+}
+
+# domain
+variable "APP" {
+  description = "Application name"
+  default = "${APP}"
+}
+
+variable "DOMAIN" {
+  description = "Root domain"
+  default = "${DOMAIN}"
+}
+
+variable "FRONTEND" {
+  description = "Frontend domain"
+  default = "${FRONTEND}"
+}
+
+variable "BACKEND" {
+  description = "Backend domain"
+  default = "${BACKEND}"
+}
