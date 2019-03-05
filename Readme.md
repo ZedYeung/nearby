@@ -1,3 +1,5 @@
+[Demo](https://nearby.zedyeung.com)
+
 # Nearby-backend
 Geospatial based photo shared social network backend with Golang<br>
 Frontend is implementated with ReactJS, please see [here](https://github.com/ZedYeung/nearby-frontend).
@@ -53,8 +55,8 @@ Frontend is implementated with ReactJS, please see [here](https://github.com/Zed
   - Implement list view with **react-grid-gallery** and map view with **react-google-maps** for nearby posts
   - Implement create new post with message and single or bulk uploaded images with **Antd** Modal, Button, Form, Input, Upload, Icon, message
 
-  ## Demo
-  [demo](https://www.youtube.com/watch?v=Thl9KsrzTIc)
+  ## Video Demo
+  [Video  Demo](https://www.youtube.com/watch?v=Thl9KsrzTIc)
 
   # TODO
   * CRUD for user's own posts
