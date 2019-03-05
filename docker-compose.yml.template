@@ -1,0 +1,56 @@
+version: '3'
+
+services:
+  db:
+    build: ./db
+    image: ${DOCKER_REGISTRY}/${GCP_PROJECT_ID}/${APP}_db:latest
+    volumes:
+      - postgres_data:/var/lib/postgreDB/data/
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+  backend:
+    build: ./backend
+    image: ${DOCKER_REGISTRY}/${GCP_PROJECT_ID}/${APP}_backend:latest
+    # expose:
+    #   - ${BACKEND_PORT}
+    ports:
+      - ${BACKEND_PORT}:${BACKEND_PORT}
+    environment:
+      - BACKEND_PORT=${BACKEND_PORT}
+      - DISTANCE=${DISTANCE}
+      - SIGN_KEY=${SIGN_KEY}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_HOST=${DB_HOST}
+      - ES_URL=${ES_URL}
+      - ES_INDEX=${ES_INDEX}
+      - ES_TYPE=${ES_TYPE}
+      - BT_INSTANCE=${BT_INSTANCE}
+      - REDIS_URL=${REDIS_URL}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_DB=${REDIS_DB}
+      - BUCKET_NAME=${BUCKET_NAME}
+      - ENABLE_MEMCACHE=${ENABLE_MEMCACHE}
+      - ENABLE_BIGTABLE=${ENABLE_BIGTABLE}
+      - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
+    depends_on:
+      - db
+  frontend:
+    build: ./frontend
+    image: ${DOCKER_REGISTRY}/${GCP_PROJECT_ID}/${APP}_frontend:latest
+    environment:
+      - BACKEND=${BACKEND}
+    ports:
+      - 8080:80
+    labels:
+      kompose.service.type: LoadBalancer
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
