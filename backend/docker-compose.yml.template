@@ -11,7 +11,7 @@ services:
       - POSTGRES_DB=${DB_NAME}
   backend:
     build: .
-    image: ${DOCKER_REGISTRY}/${DOCKER_USER}/${APP}_backend:latest
+    image: ${DOCKER_REGISTRY}/${GCP_PROJECT_ID}/${APP}_backend:latest
     volumes:
       - ./:/usr/local/backend
     ports:
