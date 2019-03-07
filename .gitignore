@@ -1,0 +1,7 @@
+.terraform
+docker-compose.yml
+.env
+vars.tf
+GOOGLE_APPLICATION_CREDENTIALS.json
+terraform.tfstate
+terraform.tfstate.backup
