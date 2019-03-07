@@ -32,6 +32,8 @@ export KIBANA_URL=http://${KIBANA_HOST}:9200
 echo "KIBANA URL: ${KIBANA_URL}"
 
 echo "Deploy backend and frontend"
+# GCR need auth in ~/.docker/config
+./utils/gcr_auth.sh
 rm -rf docker-compose.yml
 envsubst < docker-compose.yml.template > docker-compose.yml
 # kompose up docker-compose.yml
