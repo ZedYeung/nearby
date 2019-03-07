@@ -1,0 +1,52 @@
+apiVersion: v1
+items:
+- apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata:
+    name: ${APP}-ingress
+    annotations:
+      nginx.ingress.kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/secure-backends: "true"
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+  spec:
+    tls:
+    - hosts:
+      - ${FRONTEND}
+      secretName: ${APP}-tls-cert
+    rules:
+      - host: ${FRONTEND}
+        http:
+          paths:
+          - path: /
+            backend:
+              serviceName: frontend
+              servicePort: 8080
+# - apiVersion: extensions/v1beta1
+#   kind: Ingress
+#   metadata:
+#     name: elk-ingress
+#     namespace: elk
+#     annotations:
+#       nginx.ingress.kubernetes.io/ingress.class: nginx
+#       nginx.ingress.kubernetes.io/secure-backends: "true"
+#       nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+#       nginx.ingress.kubernetes.io/rewrite-target: /
+#   spec:
+#     tls:
+#     - hosts:
+#       - ${FRONTEND}
+#       secretName: ${APP}-tls-cert
+#     rules:
+#       - host: ${FRONTEND}
+#         http:
+#           paths:
+#           - path: /es
+#             backend:
+#               serviceName: elasticsearch
+#               servicePort: 9200
+#           - path: /kibana
+#             backend:
+#               serviceName: kibana
+#               servicePort: 5601
+kind: List
+metadata: {}
