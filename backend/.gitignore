@@ -9,3 +9,7 @@ pkg/
 src/config/*.json
 src/test_images/
 
+.env
+docker-compose.yml
+GOOGLE_APPLICATION_CREDENTIALS.json
+
